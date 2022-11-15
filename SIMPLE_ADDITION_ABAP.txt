@@ -1,0 +1,19 @@
+*&---------------------------------------------------------------------*
+*& Report  ZAW_SAMPLE_PROGRAM
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZAW_SAMPLE_PROGRAM.
+*data : pa_num type i value 10,
+*      ma_num type i value 20,
+data   re_num type i.
+
+PARAMETERS : pa_num type i, ma_num type i.
+
+
+re_num = pa_num + ma_num.
+
+write : re_num.

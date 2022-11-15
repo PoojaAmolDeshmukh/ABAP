@@ -1,0 +1,27 @@
+Wage Type Reporter (Report H99CWTR0)
+Use
+The Wage Type Reporter evaluates wage types from the payroll results for a particular period. The report uses data from the tables RT (Results Table) and WPBP table (Work Center Basic P ay). At the moment, no other tables are evaluated and no data is taken from infotype records.
+
+Scope of Function
+The standard selection fields for the logical database PNP are displayed in the Selection group. Note that the selection according to organizational criteria in these fields need not correspond to the selection of payroll results for the selected organizational unit. Differences may occur, in particular, with retroactive master data changes. SAP recommends that you also include the objects used as the selection criteria in the object selection.
+
+In the Period determination group, you define the evaluation period and the required view of payroll results.
+
+Example
+Period selected is 01.01.1998 to 31.03.1998
+
+If the in-period view is selected, all results that were created in that period are selected, whereby the period end date is used for the period assignment. In the above example, a payroll run in February 1998 for December 1997 would be included, however, a payroll run in May 1998 for February 1998 would not be used.
+
+If the for-period view is selected, all results that were created for that period are selected, whereby the period payment date is used for the period assignment. In the above example, a payroll run in February 1998 for December 1997 would not be included, however, a payroll run in May 1998 for February 1998 would be used.
+
+In the Other selections group, you can restrict the selection to particular wage types. You use the Object Selection function to define which columns are displayed in the list and which objects are summarized.
+
+Example
+You select company code, wage type, and in-period. The selected objects are printed as columns in the list and the objects not selected are summarized.
+
+In the Output group, you specify whether you want to create the wage type list using the ABAP List Viewer or with Microsoft Excel .
+
+Caution
+The report can only run in batch processing mode if used with the List Viewer.
+
+To use the Excel option, your system must have at least SAP GUI version 4.5A, Windows 95 or NT4.0, and Excel 97.

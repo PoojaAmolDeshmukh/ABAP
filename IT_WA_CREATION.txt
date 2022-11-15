@@ -1,0 +1,48 @@
+*&------------------------------------------------------------------------------------------
+*& Description: this table is about creation on internal table and work area
+*& passing data into work area then in internal table and printing it
+*& designing selection screen
+*&
+REPORT ZIT_TEST.
+
+TYPES: BEGIN OF TY_STR,
+  NAME(10) TYPE C,
+  AGE(2) TYPE C,
+  GENDER(10) TYPE C,
+  END OF TY_STR.                "structure created
+
+DATA: IT_TABLE TYPE TABLE OF TY_STR,
+      WA_TABLE TYPE TY_STR.            "internal table and work area created
+
+*********SELECTION SCREEN
+PARAMETERS: P1(10) TYPE C.
+
+
+* to add data into table:
+
+WA_TABLE-NAME = 'POO'.
+WA_TABLE-AGE = '22'.
+WA_TABLE-GENDER = 'FEMALE'.
+APPEND WA_TABLE  TO IT_TABLE.
+
+WA_TABLE-NAME = 'ROOTUJA'.
+WA_TABLE-AGE = '32'.
+WA_TABLE-GENDER = 'FEMALE'.
+APPEND WA_TABLE  TO IT_TABLE.
+
+WA_TABLE-NAME = 'KRISH'.
+WA_TABLE-AGE = '42'.
+WA_TABLE-GENDER = 'MALE'.
+APPEND WA_TABLE  TO IT_TABLE.
+
+"print table using loop
+WRITE: 'NAME', 8'AGE',   14'GENDER'.
+WRITE: / '________________________________________________'.
+
+**IF I WANT PARTICULAR EMPLOYEE RECORD: I CAN USE DELETE IT_TABLE WHERE NAME <> P1. OR ADD WHERE NAME = P1 IN LOOP
+
+LOOP AT IT_TABLE INTO WA_TABLE WHERE NAME = P1.
+  WRITE: / WA_TABLE-NAME,
+           WA_TABLE-AGE,
+           WA_TABLE-GENDER.
+ENDLOOP.

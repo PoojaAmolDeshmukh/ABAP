@@ -1,0 +1,44 @@
+*&---------------------------------------------------------------------*
+*& Report  ZSCREEN_P_ASSIGNMENT1
+*& Description :SCREEN designing for buttons calling custom t-codes using PAI and PBO
+*& used menu painter for back
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZSCREEN_P_ASSIGNMENT1.
+CALL SCREEN 102.
+
+
+****** process before output***************
+
+MODULE STATUS_0102 OUTPUT.
+  SET PF-STATUS 'BACK'.
+*  SET TITLEBAR 'xxx'.
+
+ENDMODULE.                 " STATUS_0102  OUTPUT
+
+
+****** process after input***************
+
+MODULE USER_COMMAND_0102 INPUT.
+
+  CASE SY-UCOMM.
+    WHEN 'BACK'.
+      LEAVE TO SCREEN 0.
+    WHEN 'B1'.
+      CALL TRANSACTION 'ZB1_SALESDATA'.
+    WHEN 'B2'.
+      CALL TRANSACTION 'ZPURCH_INTER'.
+
+    WHEN 'B3'.
+      CALL TRANSACTION 'ZCUST_JOIN_REPORT'.  " YY_ALV_NW IS CUSTOM T-CODE FOR YY-INTERACTIVE REPORT
+
+    WHEN 'B4'.
+      CALL TRANSACTION 'ZVENDOR_CLASSICAL'.
+
+  ENDCASE.
+
+
+ENDMODULE.                 " USER_COMMAND_0102  INPUT

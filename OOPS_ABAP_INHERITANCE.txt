@@ -1,0 +1,41 @@
+*&---------------------------------------------------------------------*
+*& Report  ZOOP_DEMO
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZOOP_DEMO.
+CLASS PARENT DEFINITION.
+  PUBLIC SECTION.
+    DATA : W_PUBLIC(40) VALUE 'THIS IS PUBLIC DATA'.
+    METHODS : PARENTMET.
+ENDCLASS.
+
+*CHILD CLASS DEFINATION
+CLASS CHILD DEFINITION INHERITING FROM PARENT.
+  PUBLIC SECTION.
+    METHODS : CHILDMET.
+ENDCLASS.
+
+CLASS PARENT IMPLEMENTATION.
+  METHOD PARENTMET.
+    WRITE  /: W_PUBLIC.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS CHILD IMPLEMENTATION.
+  METHOD  CHILDMET.
+    SKIP.
+    WRITE:/'METHOD IN CHILD CLASS',W_PUBLIC.
+  ENDMETHOD.
+ENDCLASS.
+
+START-OF-SELECTION.
+  DATA : PARENT TYPE REF TO PARENT,
+         CHILD TYPE REF TO CHILD.
+
+  CREATE OBJECT: PARENT ,CHILD.
+  CALL METHOD : PARENT->PARENTMET,
+                CHILD->CHILDMET.

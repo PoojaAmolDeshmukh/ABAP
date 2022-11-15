@@ -1,0 +1,88 @@
+*&---------------------------------------------------------------------*
+*& Report  YINTERACTIVE
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT YINTERACTIVE.
+TABLES: KNA1, VBAK.                           """""""--------------------------TABLE NAMES
+
+INCLUDE YTOP_1.
+
+INCLUDE YSELECTSCREEN.
+INCLUDE YATLINE.
+
+______________________________________________________________________________________________________
+
+*&---------------------------------------------------------------------*
+*&  Include           YTOP_1
+*&---------------------------------------------------------------------*
+
+TYPES: BEGIN OF TY_KNA1,                 """""""-------------------------- STRUCTURE DECLARATION
+  KUNNR TYPE KUNNR,
+  NAME1 TYPE NAME1_GP,
+  LAND1 TYPE LAND1_GP,
+  ORT01 TYPE ORT01_GP,
+  END OF TY_KNA1.
+
+TYPES: BEGIN OF TY_VBAK,
+  VBELN TYPE VBELN_VA,
+  ERDAT TYPE ERDAT,
+  ERZET TYPE ERZET,
+  ERNAM TYPE ERNAM,
+  KUNNR TYPE KUNNR,
+END OF TY_VBAK.
+
+DATA: IT_KNA1 TYPE TABLE OF TY_KNA1,                   """""""-------------------------- INTERNAL TABLE AND WORK AREA DECLARATION
+      WA_KNA1 TYPE TY_KNA1,
+      IT_VBAK TYPE TABLE OF TY_VBAK,
+      WA_VBAK TYPE TY_VBAK,
+      LV_KUNNR TYPE KUNNR.
+_________________________________________________________________________________________________________________________
+
+*&---------------------------------------------------------------------*
+*&  Include           YSELECTSCREEN
+*&---------------------------------------------------------------------*
+
+"""""""-------------------------- SELECTION SCREEN
+SELECT-OPTIONS: SO_KUNNR FOR LV_KUNNR.
+
+"""""""-------------------------- AT SCREEN SELECTION
+SELECT KUNNR
+  NAME1
+  LAND1
+  ORT01
+  FROM KNA1 INTO TABLE IT_KNA1
+  WHERE KUNNR IN SO_KUNNR.
+
+  LOOP AT IT_KNA1 INTO WA_KNA1.
+    WRITE: / WA_KNA1-KUNNR,
+    WA_KNA1-NAME1,
+    WA_KNA1-LAND1,
+    WA_KNA1-ORT01.
+ HIDE: WA_KNA1-KUNNR.
+ ENDLOOP.
+______________________________________________________________________________________________________________________________
+
+*&---------------------------------------------------------------------*
+*&  Include           YATLINE
+*&---------------------------------------------------------------------*
+
+AT LINE-SELECTION.
+  SELECT VBELN
+    ERDAT
+    ERZET
+    ERNAM
+    KUNNR
+    FROM VBAK INTO TABLE IT_VBAK
+    WHERE KUNNR = WA_KNA1-KUNNR .
+
+    LOOP AT IT_VBAK INTO WA_VBAK.
+      WRITE: / WA_VBAK-VBELN,
+      WA_VBAK-ERDAT,
+      WA_VBAK-ERZET,
+      WA_VBAK-ERNAM,
+      WA_VBAK-KUNNR.
+      ENDLOOP.

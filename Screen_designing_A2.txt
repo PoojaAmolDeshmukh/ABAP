@@ -1,0 +1,36 @@
+*&---------------------------------------------------------------------*
+*& Report  ZSCREEN_ASSI_2
+*&
+*&---------------------------------------------------------------------*
+*& Description: CUSTOM SCREEN for customer table KNA1
+*& select clause is used for getting data and clear used to earase that data
+*&---------------------------------------------------------------------*
+
+REPORT ZSCREEN_ASSI_2.
+TABLES: KNA1.
+call SCREEN 100.
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS 'BACK'.
+*  SET TITLEBAR 'xxx'.
+
+ENDMODULE.                 " STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+MODULE USER_COMMAND_0100 INPUT.
+
+CASE SY-UCOMM.
+  WHEN 'BACK'.
+    LEAVE TO SCREEN 0.
+  WHEN 'B1'.
+    SELECT SINGLE NAME1
+      LAND1
+      ORT01
+      FROM KNA1 INTO CORRESPONDING FIELDS OF KNA1 WHERE KUNNR = KNA1-KUNNR .
+  WHEN 'B2'.
+    CLEAR KNA1.
+
+
+ENDCASE.
+ENDMODULE.                 " USER_COMMAND_0100  INPUT

@@ -1,0 +1,19 @@
+*&---------------------------------------------------------------------*
+*& Report  ZTYPE_GROUP
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZTYPE_GROUP.
+
+TYPE-POOLS : ZTYPE.
+
+DATA :  1_CIRC TYPE P DECIMALS 2,
+         1_RAD TYPE F VALUE '5.7',
+        1_PERC TYPE ZTYPE_PERCENTAGE VALUE '22.5'.
+
+       1_CIRC = 2 * 1_RAD * ZTYPE_PI.
+
+        WRITE : 'OUTPUT',1_CIRC.

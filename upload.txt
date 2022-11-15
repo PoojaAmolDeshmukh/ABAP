@@ -1,0 +1,5 @@
+pooja	20	female
+pallavi	21	female
+priti	25	female
+kajal	30	female
+raj	29	male

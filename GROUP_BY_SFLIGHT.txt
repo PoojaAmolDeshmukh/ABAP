@@ -1,0 +1,32 @@
+*&---------------------------------------------------------------------*
+*& Report  ZAW_SALES_ORDER_GROUP_BY
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZAW_SALES_ORDER_GROUP_BY.
+
+TYPES : BEGIN OF TY_SFLIGHT,
+  CNTALL TYPE I,
+  MAX_SEATS TYPE SFLIGHT-SEATSOCC,
+  MIN_SEATS TYPE SFLIGHT-SEATSOCC,
+  SUM_SEATS TYPE SFLIGHT-SEATSOCC,
+  END OF TY_SFLIGHT.
+
+DATA: IT_SFLIGHT TYPE STANDARD TABLE OF TY_SFLIGHT,
+      WA_SFLIGHT TYPE TY_SFLIGHT.
+
+PARAMETERS: S_CARRID LIKE SFLIGHT-CARRID.
+
+SELECT COUNT(*) MAX( SEATSOCC ) MIN( SEATSOCC ) SUM( SEATSOCC )
+  FROM SFLIGHT INTO TABLE IT_SFLIGHT
+  WHERE CARRID EQ S_CARRID
+  Group By connid carrid
+  having sum( seatsocc ) > 3000.
+
+
+LOOP AT IT_SFLIGHT INTO WA_SFLIGHT.
+  WRITE : / WA_SFLIGHT-CNTALL, WA_SFLIGHT-MAX_SEATS, WA_SFLIGHT-MIN_SEATS, WA_SFLIGHT-SUM_SEATS.
+ENDLOOP.

@@ -1,0 +1,93 @@
+*&---------------------------------------------------------------------*
+*& Module Pool       ZAWSUB
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+PROGRAM ZAWSUB.
+
+tables: kna1, knbk.
+
+data: kunnr type kna1-kunnr,
+      bankn type knbk-bankn,
+      scrno type n length 4 value 0110.
+
+start-of-selection.
+call screen 0100.
+call screen 0110.
+call screen 0120.
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE STATUS_0100 OUTPUT.
+*  SET PF-STATUS 'xxxxxxxx'.
+*  SET TITLEBAR 'xxx'.
+
+
+
+ENDMODULE.                 " STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0100 INPUT.
+
+case sy-ucomm.
+  when 'DISPLAY'.
+    scrno = 0110.
+  when 'EXIT'.
+    leave program.
+    endcase.
+ENDMODULE.                 " USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0110  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE STATUS_0110 OUTPUT.
+*  SET PF-STATUS 'xxxxxxxx'.
+*  SET TITLEBAR 'xxx'.
+select single bankn from knbk into ( knbk-bankn ) where kunnr = kna1-kunnr.
+
+ENDMODULE.                 " STATUS_0110  OUTPUT
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0110  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0110 INPUT.
+
+case sy-ucomm.
+  when 'DISPLAY'.
+   scrno = 0120.
+  when 'EXIT'.
+    leave program.
+    endcase.
+ENDMODULE.                 " USER_COMMAND_0110  INPUT
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0120  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE STATUS_0120 OUTPUT.
+*  SET PF-STATUS 'xxxxxxxx'.
+*  SET TITLEBAR 'xxx'.
+select single land1 name1 from kna1 into ( kna1-land1, kna1-name1 ) where kunnr = kna1-kunnr.
+ENDMODULE.                 " STATUS_0120  OUTPUT
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0120  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0120 INPUT.
+
+case sy-ucomm.
+  when 'EXIT'.
+    leave program.
+    endcase.
+ENDMODULE.                 " USER_COMMAND_0120  INPUT

@@ -1,0 +1,104 @@
+*&---------------------------------------------------------------------*
+*& Report  ZAW_PO_INTERACTIVE_REPORT
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZAW_PO_INTERACTIVE_REPORT.
+
+types: begin of ty_ekpo,
+  ebeln type ekpo-ebeln,
+  werks type ekpo-werks,
+  lgort type ekpo-lgort,
+  txz01 type ekpo-txz01,
+end of ty_ekpo.
+
+types: begin of ty_ekko,
+  ebeln type ekko-ebeln,
+  ernam type ekko-ernam,
+  aedat type ekko-aedat,
+ end of ty_ekko.
+
+ types: begin of ty_ekbe,
+   ebeln type ekbe-ebeln,
+   Belnr type ekbe-belnr,
+   menge type ekbe-menge,
+  end of ty_ekbe.
+
+  types: begin of ty_final,
+    txz01 type ekpo-txz01,
+    ebeln type ekpo-ebeln,
+    belnr type ekbe-belnr,
+    menge type ekbe-menge,
+    lgort type ekpo-lgort,
+    werks type ekpo-werks,
+   end of ty_final.
+
+
+  data: it_ekko type standard table of ty_ekko,
+        wa_ekko type ty_ekko,
+        it_ekpo type standard table of ty_ekpo,
+        wa_ekpo type ty_ekpo,
+        it_ekbe type standard table of ty_ekbe,
+        wa_ekbe type ty_ekbe,
+        it_final type standard table of ty_final,
+        wa_final type ty_final.
+
+  parameters: p_lgort type ekpo-lgort,
+              p_werks type ekpo-werks.
+
+  select * from ekpo into corresponding fields of table it_ekpo where lgort = p_lgort
+    and werks = p_werks.
+
+    if it_ekpo[] is not initial.
+      select * from ekko into corresponding fields of table it_ekko
+        for all entries in it_ekpo where ebeln = it_ekpo-ebeln and SPRAS = 'E'.
+    endif.
+
+    if it_ekko[] is not initial.
+      select distinct ebeln belnr menge from ekbe into corresponding fields of table it_ekbe for all entries in it_ekko
+        where ebeln = it_ekko-ebeln.
+    endif.
+
+    loop at it_ekko into wa_ekko.
+     write:/1 wa_ekko-ebeln, 40 wa_ekko-ernam, 110 wa_ekko-aedat.
+     HIDE wa_ekko-ebeln.
+    endloop.
+
+    clear wa_ekpo-ebeln.
+
+    At line-selection.
+*      refresh it_final.
+*      clear wa_final.
+      uline.
+      if sy-lsind = 1.
+        write:/1 'Order Number' color 2, 20 'Number of Material Document', 70 'Quantity', 100 'Plant',
+        120 'Storage Location'.
+        uline.
+       endif.
+
+    loop at it_ekbe into wa_ekbe
+  where ebeln = wa_ekko-ebeln.
+  wa_final-ebeln = wa_ekbe-ebeln.
+  wa_final-belnr = wa_ekbe-belnr.
+  wa_final-menge = wa_ekbe-menge.
+  read table it_ekpo into wa_ekpo with key ebeln = wa_ekko-ebeln.
+
+  if sy-subrc EQ 0.
+    wa_final-lgort = wa_ekpo-lgort.
+    wa_final-werks = wa_ekpo-werks.
+   append wa_final to it_final.
+    endif.
+    endloop.
+
+  loop at it_final into wa_final.
+    write:/1 wa_final-ebeln color 2, 20 wa_final-belnr color 3, 70 wa_final-menge,
+    100 wa_final-werks, 120 wa_final-lgort color 4.
+
+    endloop.
+
+    Top-of-page.
+    write:/1 'Order number' color 1, 40 'Order Document Created by' color 2, 110 'Order Cration date' color 3.
+    uline.

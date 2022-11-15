@@ -1,0 +1,122 @@
+*&---------------------------------------------------------------------*
+*& Report  ZTOP_CREATE
+*& 
+*&---------------------------------------------------------------------*
+*&  FOR CREATING HEADING FOR REPORT: TOP-OF-PAGE USED HERE
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZTOP_CREATE.
+
+TABLES: SFLIGHT.
+TYPES: BEGIN OF TY_DATA,
+  CARRID TYPE S_CARR_ID,
+  CONNID TYPE S_CONN_ID,
+  FLDATE TYPE S_DATE,
+  PRICE TYPE S_PRICE,
+  CURRENCY TYPE S_CURRCODE,
+  SEATSMAX TYPE S_SEATSMAX,
+  SEATSOCC TYPE S_SEATSOCC,
+  END OF TY_DATA.
+
+DATA: IT_FLIGHT TYPE TABLE OF TY_DATA,
+      WA_FLIGHT TYPE TY_DATA,
+      LCARRID TYPE S_CARR_ID,
+      IT_FCAT TYPE SLIS_T_FIELDCAT_ALV,
+      WA_FCAT TYPE SLIS_FIELDCAT_ALV,
+      WA_LAYO TYPE SLIS_LAYOUT_ALV,
+      IT_LIST TYPE SLIS_T_LISTHEADER,
+      WA_LIST TYPE SLIS_LISTHEADER.
+
+
+SELECTION-SCREEN BEGIN OF BLOCK B1 WITH FRAME TITLE TEXT-001.
+SELECT-OPTIONS: SCARRID  FOR LCARRID.
+SELECTION-SCREEN END OF BLOCK B1.
+
+SELECT CARRID
+  CONNID
+  FLDATE
+  PRICE
+  CURRENCY
+  SEATSMAX
+  SEATSOCC
+  FROM SFLIGHT INTO TABLE IT_FLIGHT
+  WHERE CARRID IN SCARRID.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '1'.
+WA_FCAT-FIELDNAME = 'CARRID'.
+wa_fcat-seltext_L =  'Airline Code'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '2'.
+WA_FCAT-FIELDNAME = 'CONNID'.
+wa_fcat-seltext_L =  'Flight Connection No.'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '3'.
+WA_FCAT-FIELDNAME = 'FLDATE'.
+wa_fcat-seltext_L =  'Flight Date'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '4'.
+WA_FCAT-FIELDNAME = 'PRICE'.
+wa_fcat-seltext_L =  'Airfare'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '5'.
+WA_FCAT-FIELDNAME = 'CURRENCY'.
+wa_fcat-seltext_L =  'Local Currency Of Airline'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '6'.
+WA_FCAT-FIELDNAME = 'SEATSMAX'.
+wa_fcat-seltext_L =  'Maximum Seats capacity'.
+append wa_fcat to it_fcat.
+
+CLEAR WA_FCAT.
+WA_FCAT-COL_POS = '7'.
+WA_FCAT-FIELDNAME = 'SEATOCCU'.
+wa_fcat-seltext_L =  'Seat Occupied'.
+append wa_fcat to it_fcat.
+wa_layo-colwidth_optimize = 'X'.
+WA_LAYO-ZEBRA = 'X'.
+
+CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+ EXPORTING
+   I_CALLBACK_PROGRAM                = SY-REPID            "THIS WILL CAPTURE CURRENT REPORT NAME
+
+   I_CALLBACK_TOP_OF_PAGE            = 'TOP_OF_PAGE '    "TOP-OF-PAGE IS EVENT NAME
+   IS_LAYOUT                         = wa_layo
+   IT_FIELDCAT                       = it_fcat
+
+  TABLES
+    T_OUTTAB                          = it_flight
+          .
+IF SY-SUBRC <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+FORM TOP_OF_PAGE.
+WA_LIST-TYP = 'H'.
+WA_LIST-INFO = 'CUSTOMER DATA'.
+APPEND WA_LIST TO IT_LIST.
+
+WA_LIST-TYP = 'S'.
+WA_LIST-KEY = 'DATE: '.
+CONCATENATE sy-datum+6(2) '.'
+  sy-datum+4(2) '.'
+  sy-datum(4) INTO WA_LIST-INFO. "todays date
+APPEND WA_LIST TO IT_LIST.
+CLEAR WA_LIST.
+
+  CALL FUNCTION 'REUSE_ALV_COMMENTARY_WRITE'
+    EXPORTING
+      IT_LIST_COMMENTARY       = IT_LIST
+           .
+  ENDFORM.

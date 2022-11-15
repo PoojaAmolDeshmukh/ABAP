@@ -1,0 +1,37 @@
+*&---------------------------------------------------------------------*
+*& Report  ZAW_ALV_PUCHASE_ORDER_20
+*& author: Anuja wani
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZAW_ALV_PUCHASE_ORDER_20.
+TABLES EKKO.
+TYPES :
+BEGIN OF ZYEKKO,
+  EBELN TYPE EKKO-EBELN,
+  BSART TYPE EKKO-BSART,
+  AEDAT TYPE EKKO-AEDAT,
+  ERNAM TYPE EKKO-ERNAM,
+  PINCR TYPE EKKO-PINCR,
+END OF ZYEKKO.
+*PARAMETERS P_EBELN LIKE EKKO-EBELN.
+DATA: IT_EKKO TYPE STANDARD TABLE OF ZYEKKO,
+      WA_EKKO TYPE ZYEKKO.
+
+SELECT-OPTIONS : P_EBELN FOR EKKO-EBELN.
+
+SELECT * FROM EKKO INTO CORRESPONDING FIELDS OF TABLE IT_EKKO WHERE EBELN IN P_EBELN.
+CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+  EXPORTING
+*
+    I_STRUCTURE_NAME = 'zyekko'
+*
+  TABLES
+    T_OUTTAB         = IT_EKKO
+*
+  .
+IF SY-SUBRC <> 0.
+* Implement suitable error handling here
+ENDIF.

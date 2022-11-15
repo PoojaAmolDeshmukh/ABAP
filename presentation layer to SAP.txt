@@ -1,0 +1,48 @@
+*&---------------------------------------------------------------------*
+*& Report  ZUPLOAD_F
+*& upload file from presentation layer to sap screen
+*&---------------------------------------------------------------------*
+*& presentation layer=your desktop
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZUPLOAD_F.
+TYPES: BEGIN OF TY_DATA,
+  NAME TYPE STRING,
+  AGE TYPE STRING,
+  GENDER TYPE STRING,
+  END OF TY_DATA.
+
+DATA: IT_DATA TYPE TABLE OF TY_DATA,
+      WA_DATA TYPE TY_DATA.
+*      LV_FILENAME TYPE RLGRAP-FILENAME,
+*      LV_STRING(100) TYPE C.
+
+*SELECTION-SCREEN
+*PARAMETERS: P_PATH TYPE RLGRAP-FILENAME.
+
+CALL FUNCTION 'GUI_UPLOAD'
+  EXPORTING
+    FILENAME = 'C:\Users\Admin\Desktop\upload.txt'
+FILETYPE                      = 'ASC'
+HAS_FIELD_SEPARATOR           = 'X'
+TABLES
+  DATA_TAB                      = IT_DATA.
+
+IF SY-SUBRC <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+*LV_FILENAME = P_PATH.
+*OPEN DATASET LV_FILENAME FOR OUTPUT IN TEXT MODE
+*ENCODING DEFAULT.
+
+LOOP AT IT_DATA INTO WA_DATA.
+*CONCATENATE
+ WRITE: / WA_DATA-NAME,
+  WA_DATA-AGE,
+  WA_DATA-GENDER.
+*  INTO LV_STRING SEPARATED BY ' ' .
+*  TRANSFER LV_STRING TO LV_FILENAME.
+ENDLOOP.
+*CLOSE DATASET LV_FILENAME.

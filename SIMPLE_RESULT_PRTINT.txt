@@ -1,0 +1,24 @@
+*&---------------------------------------------------------------------*
+*& Report  ZPAGENO_21
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZPAGENO_21.
+
+DATA : RESULT TYPE ZASSETS66.
+
+PARAMETERS : PA_FNAME TYPE ZFIRSTNAME66,
+             PA_LNAME TYPE ZLASTNAME66,
+             PA_ACTIV TYPE ZASSETS66,
+             PA_LIABS TYPE ZLIABILITIES66.
+START-OF-SELECTION.
+
+NEW-LINE.
+
+WRITE : 'CLIENT:',PA_FNAME, PA_LNAME.
+RESULT = PA_ACTIV  - PA_LIABS.
+NEW-LINE.
+WRITE : 'FINANCE',PA_ACTIV,PA_LIABS, RESULT.

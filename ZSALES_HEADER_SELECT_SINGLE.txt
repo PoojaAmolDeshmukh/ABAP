@@ -1,0 +1,92 @@
+*&---------------------------------------------------------------------*
+*& Report  ZSALES_HEADER_SELECT_SINGLE
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT ZSALES_HEADER_SELECT_SINGLE.
+tables : vbap.
+* Data Declaration
+types : begin of ty_vbap,
+  vbeln type vbap-vbeln,
+  posnr type vbap-posnr,
+  arktx type vbap-arktx,
+  erdat type vbap-erdat,
+  ernam type vbap-ernam,
+  netwr type vbap-netwr,
+  waerk type vbap-waerk,
+  end of ty_vbap.
+data : it_vbap type STANDARD TABLE OF ty_vbap,
+       wa_vbap type ty_vbap.
+
+* Input Screen
+select-options : S_vbeln for vbap-vbeln.
+
+* Data Selection
+select vbeln posnr arktx erdat ernam  netwr waerk from vbap into table it_vbap where vbeln in S_vbeln.
+
+* Output Data
+CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+ EXPORTING
+*   I_INTERFACE_CHECK                 = ' '
+*   I_BYPASSING_BUFFER                = ' '
+*   I_BUFFER_ACTIVE                   = ' '
+*   I_CALLBACK_PROGRAM                = ' '
+*   I_CALLBACK_PF_STATUS_SET          = ' '
+*   I_CALLBACK_USER_COMMAND           = ' '
+*   I_CALLBACK_TOP_OF_PAGE            = ' '
+*   I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*   I_CALLBACK_HTML_END_OF_LIST       = ' '
+   I_STRUCTURE_NAME                  = 'ZSTRUCT_VBAP'
+*   I_BACKGROUND_ID                   = ' '
+*   I_GRID_TITLE                      =
+*   I_GRID_SETTINGS                   =
+*   IS_LAYOUT                         =
+*   IT_FIELDCAT                       =
+*   IT_EXCLUDING                      =
+*   IT_SPECIAL_GROUPS                 =
+*   IT_SORT                           =
+*   IT_FILTER                         =
+*   IS_SEL_HIDE                       =
+*   I_DEFAULT                         = 'X'
+*   I_SAVE                            = ' '
+*   IS_VARIANT                        =
+*   IT_EVENTS                         =
+*   IT_EVENT_EXIT                     =
+*   IS_PRINT                          =
+*   IS_REPREP_ID                      =
+*   I_SCREEN_START_COLUMN             = 0
+*   I_SCREEN_START_LINE               = 0
+*   I_SCREEN_END_COLUMN               = 0
+*   I_SCREEN_END_LINE                 = 0
+*   I_HTML_HEIGHT_TOP                 = 0
+*   I_HTML_HEIGHT_END                 = 0
+*   IT_ALV_GRAPHICS                   =
+*   IT_HYPERLINK                      =
+*   IT_ADD_FIELDCAT                   =
+*   IT_EXCEPT_QINFO                   =
+*   IR_SALV_FULLSCREEN_ADAPTER        =
+* IMPORTING
+*   E_EXIT_CAUSED_BY_CALLER           =
+*   ES_EXIT_CAUSED_BY_USER            =
+  TABLES
+    T_OUTTAB                          = it_vbap
+* EXCEPTIONS
+*   PROGRAM_ERROR                     = 1
+*   OTHERS                            = 2
+          .
+IF SY-SUBRC <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+
+
+
+
+*  if it_vbap[] is not initial.
+*    loop at it_vbap into wa_vbap.
+*    write : / wa_vbap-vbeln, wa_vbap-posnr,wa_vbap-arktx, wa_vbap-ERDAT, wa_vbap-ERNAM,  wa_vbap-NETWR, wa_vbap-WAERK.
+*    endloop.
+*    endif.

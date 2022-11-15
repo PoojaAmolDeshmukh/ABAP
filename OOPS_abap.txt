@@ -1,0 +1,61 @@
+*&---------------------------------------------------------------------*
+*& Report  ZWIDE_CASTING
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT zwide_casting.
+CLASS class_super DEFINITION.
+  PUBLIC SECTION.
+    DATA : w_area TYPE i.
+    METHODS : area IMPORTING w_length TYPE i w_breadth TYPE i.
+ENDCLASS.
+CLASS class_super IMPLEMENTATION.
+  METHOD area.
+    w_area =    w_length * w_breadth.
+    WRITE : / 'AREA OF RECTANGLE = ' , w_area.
+  ENDMETHOD.
+ENDCLASS.
+CLASS class_sub DEFINITION INHERITING FROM class_super.
+  PUBLIC SECTION.
+
+    DATA : w_height TYPE i.
+    METHODS : area REDEFINITION.
+ENDCLASS.
+CLASS class_sub IMPLEMENTATION.
+  METHOD : area.
+    w_area = 6 * w_length * w_breadth * w_height.
+    WRITE : /'AREA OF THE CUBE =' , w_area.
+  ENDMETHOD.
+ENDCLASS.
+
+DATA : object_superclass TYPE REF TO class_super.
+DATA : object_subclass TYPE REF TO class_sub.
+DATA : object2_superclass TYPE REF TO class_super.
+
+START-OF-SELECTION.
+  CREATE OBJECT object_superclass.    "PROG STARTS FROM HERE
+  CREATE OBJECT object2_superclass.
+  CREATE OBJECT object_subclass.
+
+  CALL METHOD object_superclass->area
+    EXPORTING
+      w_length  = 10
+      w_breadth = 5.
+* *NARROW CASTING
+  object_subclass->w_height = 10.
+  object_superclass = object_subclass.
+
+  CALL METHOD object_superclass->area
+    EXPORTING
+      w_length  = 10
+      w_breadth = 10.
+
+  object_superclass ?= object2_superclass.
+
+  CALL METHOD object_superclass->area
+    EXPORTING
+      w_length  = 10
+      w_breadth = 5.
